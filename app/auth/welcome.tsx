@@ -16,133 +16,153 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
-// Student hero image (safe, high quality)
-const STUDENT_IMAGE =
-  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop';
+// Real student photos (high quality, stable Unsplash links)
+const studentPhotos = [
+  'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1588075592446-265fd1e9b4d6?q=80&w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1543269865-96ae30571b5a?q=80&w=600&auto=format&fit=crop',
+];
 
 export default function Welcome() {
-  const titleOpacity = useRef(new Animated.Value(0)).current;
-  const titleTranslate = useRef(new Animated.Value(10)).current;
-  const ctaOpacity = useRef(new Animated.Value(0)).current;
-  const ctaTranslate = useRef(new Animated.Value(16)).current;
+  const topAnim = useRef(new Animated.Value(0)).current;
+  const cardsAnim = useRef(new Animated.Value(0)).current;
+  const textAnim = useRef(new Animated.Value(0)).current;
+  const ctaAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.sequence([
-      Animated.parallel([
-        Animated.timing(titleOpacity, {
-          toValue: 1,
-          duration: 650,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-        Animated.timing(titleTranslate, {
-          toValue: 0,
-          duration: 650,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.parallel([
-        Animated.timing(ctaOpacity, {
-          toValue: 1,
-          duration: 520,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-        Animated.timing(ctaTranslate, {
-          toValue: 0,
-          duration: 520,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-      ]),
+    Animated.stagger(120, [
+      Animated.timing(topAnim, {
+        toValue: 1,
+        duration: 520,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(cardsAnim, {
+        toValue: 1,
+        duration: 520,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(textAnim, {
+        toValue: 1,
+        duration: 520,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(ctaAnim, {
+        toValue: 1,
+        duration: 520,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
     ]).start();
-  }, [titleOpacity, titleTranslate, ctaOpacity, ctaTranslate]);
+  }, [topAnim, cardsAnim, textAnim, ctaAnim]);
+
+  const fadeUp = (anim: Animated.Value, distance = 12) => ({
+    opacity: anim,
+    transform: [
+      {
+        translateY: anim.interpolate({
+          inputRange: [0, 1],
+          outputRange: [distance, 0],
+        }),
+      },
+    ],
+  });
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <View style={styles.container}>
-        {/* Spotify-like collage/hero zone (but bright) */}
-        <View style={styles.collageWrap} pointerEvents="none">
-          {/* soft tiles behind like Spotify mosaic */}
-          <View style={styles.collageRow}>
-            <View style={[styles.tile, styles.tileTall, styles.t1]} />
-            <View style={[styles.tile, styles.tileSquare, styles.t2]} />
-            <View style={[styles.tile, styles.tileTall, styles.t3]} />
-          </View>
-          <View style={styles.collageRow}>
-            <View style={[styles.tile, styles.tileSquare, styles.t4]} />
-            <View style={[styles.tile, styles.tileWide, styles.t5]} />
-          </View>
-
-          {/* student hero image front-center */}
-          <View style={styles.heroWrap}>
-            <Image source={{ uri: STUDENT_IMAGE }} style={styles.heroImage} />
-            <LinearGradient
-              colors={['rgba(0,0,0,0.0)', 'rgba(0,0,0,0.18)']}
-              style={styles.heroShade}
-            />
-            <View style={styles.heroBadge}>
-              <Text style={styles.heroBadgeText}>For Students</Text>
-            </View>
-          </View>
-
-          {/* fade to white like Spotify fades to black */}
+        {/* Top gradient zone (like sample) */}
+        <Animated.View style={[styles.topZone, fadeUp(topAnim, 8)]}>
           <LinearGradient
-            colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.9)', '#FFFFFF']}
-            style={styles.fadeMask}
+            colors={['#3B82F6', '#93C5FD', '#EAF2FF', '#FFFFFF']}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={styles.topGradient}
           />
-        </View>
 
-        {/* Main content */}
-        <View style={styles.content}>
-          <Animated.View
-            style={[
-              styles.header,
-              {
-                opacity: titleOpacity,
-                transform: [{ translateY: titleTranslate }],
-              },
-            ]}
-          >
-            <Text style={styles.title}>Millions of students.</Text>
-            <Text style={styles.title}>One smart platform.</Text>
-            <Text style={styles.subtitle}>
-              Study better, stay organized, and move forward with confidence.
-            </Text>
+          {/* Floating feature cards */}
+          <Animated.View style={[styles.cardsWrap, fadeUp(cardsAnim, 10)]}>
+            <View style={styles.cardsRow}>
+              <View style={[styles.card, styles.cardSmall]}>
+                <Text style={styles.cardTitle}>Track Classes</Text>
+                <Text style={styles.cardMeta}>Smart timetable</Text>
+              </View>
+
+              <View style={[styles.card, styles.cardSmall]}>
+                <Text style={styles.cardTitle}>Offline Notes</Text>
+                <View style={styles.daysRow}>
+                  {['M', 'T', 'W', 'T', 'F'].map((d) => (
+                    <View key={d} style={styles.dayDot}>
+                      <Text style={styles.dayDotText}>{d}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.cardsRow}>
+              <View style={[styles.card, styles.cardWide]}>
+                <View style={styles.cardIconSoft}>
+                  <Text style={styles.cardIconSoftText}>✓</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.cardTitle}>Activity Monitor</Text>
+                  <Text style={styles.cardMeta}>
+                    Stay consistent with your study goals.
+                  </Text>
+                </View>
+              </View>
+            </View>
           </Animated.View>
+        </Animated.View>
 
-          <Animated.View
-            style={[
-              styles.footer,
-              {
-                opacity: ctaOpacity,
-                transform: [{ translateY: ctaTranslate }],
-              },
-            ]}
-          >
-            {/* ONLY your existing functions */}
-            <Link href="/auth/sign-up" asChild>
-              <TouchableOpacity style={styles.buttonPrimary} activeOpacity={0.9}>
-                <Text style={styles.buttonPrimaryText}>Sign up free</Text>
-              </TouchableOpacity>
-            </Link>
+        {/* Avatar group */}
+        <Animated.View style={[styles.avatarsWrap, fadeUp(textAnim, 10)]}>
+          <View style={styles.avatarsRow}>
+            {studentPhotos.slice(0, 5).map((uri, i) => (
+              <View
+                key={uri}
+                style={[
+                  styles.avatarShell,
+                  { marginLeft: i === 0 ? 0 : -12, zIndex: 10 - i },
+                ]}
+              >
+                <Image source={{ uri }} style={styles.avatar} />
+              </View>
+            ))}
+          </View>
+        </Animated.View>
 
-            <Link href="/auth/login" asChild>
-              <TouchableOpacity style={styles.buttonSecondary} activeOpacity={0.9}>
-                <Text style={styles.buttonSecondaryText}>Log in</Text>
-              </TouchableOpacity>
-            </Link>
+        {/* Text + CTAs */}
+        <Animated.View style={[styles.bottomZone, fadeUp(ctaAnim, 12)]}>
+          <Text style={styles.title}>Welcome to Rork</Text>
+          <Text style={styles.subtitle}>
+            Supporting students to learn smarter and stay on track.
+          </Text>
 
-            <Text style={styles.legal}>
-              By continuing, you agree to our Terms & Privacy Policy.
-            </Text>
-          </Animated.View>
-        </View>
+          {/* Only your existing functions */}
+          <Link href="/auth/sign-up" asChild>
+            <TouchableOpacity style={styles.primaryBtn} activeOpacity={0.9}>
+              <Text style={styles.primaryBtnText}>Sign up</Text>
+            </TouchableOpacity>
+          </Link>
+
+          <Link href="/auth/login" asChild>
+            <TouchableOpacity style={styles.loginLink} activeOpacity={0.8}>
+              <Text style={styles.loginText}>Log in</Text>
+            </TouchableOpacity>
+          </Link>
+        </Animated.View>
       </View>
     </SafeAreaView>
   );
 }
+
+const CARD_RADIUS = 14;
 
 const styles = StyleSheet.create({
   safe: {
@@ -151,163 +171,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+
+  topZone: {
+    height: width * 0.9,
     position: 'relative',
-    backgroundColor: '#FFFFFF',
   },
-
-  collageWrap: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 420,
-    paddingTop: Platform.OS === 'ios' ? 6 : 10,
-  },
-  collageRow: {
-    flexDirection: 'row',
-    gap: 10,
-    paddingHorizontal: 14,
-    marginBottom: 10,
-    opacity: 0.7,
-  },
-  tile: {
-    backgroundColor: '#F1F5F9',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  tileTall: {
-    width: (width - 14 * 2 - 10 * 2) / 3,
-    height: 110,
-  },
-  tileSquare: {
-    width: (width - 14 * 2 - 10 * 2) / 3,
-    height: 86,
-  },
-  tileWide: {
-    flex: 1,
-    height: 86,
-  },
-
-  // gentle modern accents (not loud)
-  t1: { backgroundColor: '#EEF2FF' }, // indigo tint
-  t2: { backgroundColor: '#ECFEFF' }, // cyan tint
-  t3: { backgroundColor: '#F0FDF4' }, // green tint
-  t4: { backgroundColor: '#FFF7ED' }, // amber tint
-  t5: { backgroundColor: '#FDF2F8' }, // pink tint
-
-  heroWrap: {
-    marginTop: 6,
-    marginHorizontal: 14,
-    height: width * 0.62,
-    borderRadius: 18,
-    overflow: 'hidden',
-    backgroundColor: '#E5E7EB',
-  },
-  heroImage: {
-    width: '100%',
-    height: '100%',
-  },
-  heroShade: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 140,
-  },
-  heroBadge: {
-    position: 'absolute',
-    left: 12,
-    bottom: 12,
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  heroBadgeText: {
-    color: '#0F172A',
-    fontSize: 12,
-    fontWeight: '800',
-    letterSpacing: 0.3,
-  },
-
-  fadeMask: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: -8,
-    height: 170,
-  },
-
-  content: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 22,
-    paddingBottom: 24,
-    gap: 18,
-  },
-  header: {
-    gap: 8,
-  },
-  title: {
-    color: '#0F172A',
-    fontSize: 32,
-    fontWeight: '800',
-    letterSpacing: 0.2,
-    lineHeight: 38,
-  },
-  subtitle: {
-    color: '#475569',
-    fontSize: 16,
-    lineHeight: 22,
-    marginTop: 6,
-    maxWidth: 330,
-  },
-
-  footer: {
-    gap: 12,
-  },
-  buttonPrimary: {
-    backgroundColor: '#1DB954', // Spotify green vibe but on white
-    paddingVertical: 16,
-    borderRadius: 999,
-    alignItems: 'center',
-    marginTop: 6,
-    shadowColor: '#1DB954',
-    shadowOpacity: 0.18,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 3,
-  },
-  buttonPrimaryText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '800',
-    letterSpacing: 0.3,
-  },
-
-  buttonSecondary: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 15,
-    borderRadius: 999,
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#0F172A',
-  },
-  buttonSecondaryText: {
-    color: '#0F172A',
-    fontSize: 16,
-    fontWeight: '800',
-    letterSpacing: 0.2,
-  },
-
-  legal: {
-    marginTop: 8,
-    textAlign: 'center',
-    fontSize: 12,
-    color: '#94A3B8',
-    lineHeight: 16,
-  },
-});
+  topGradient: {
