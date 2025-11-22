@@ -19,16 +19,13 @@ function RootLayoutNav() {
   useEffect(() => {
     if (isLoading) return;
 
-    const inAuthGroup = segments[0] === "auth";
-    // const inAppGroup = segments[0] === "(app)";
+    // segments can be [] for a moment on first load
+    const firstSegment = segments?.[0];
+    const inAuthGroup = firstSegment === "auth";
 
-    if (isLoading) {
-       // still loading
-    } else if (!user && !inAuthGroup) {
-      // Redirect to the sign-in page.
+    if (!user && !inAuthGroup) {
       router.replace("/auth/welcome");
     } else if (user && inAuthGroup) {
-      // Redirect away from the sign-in page.
       // @ts-ignore
       router.replace("/(app)/(tabs)/home");
     }
@@ -36,7 +33,7 @@ function RootLayoutNav() {
 
   useEffect(() => {
     if (!isLoading) {
-        SplashScreen.hideAsync();
+      SplashScreen.hideAsync();
     }
   }, [isLoading]);
 
