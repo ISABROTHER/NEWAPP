@@ -1,29 +1,176 @@
 import { Link } from 'expo-router';
-import { StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import {
+  Animated,
+  Easing,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Welcome() {
+  // Animations
+  const headerOpacity = useRef(new Animated.Value(0)).current;
+  const headerTranslate = useRef(new Animated.Value(12)).current;
+
+  const btn1Opacity = useRef(new Animated.Value(0)).current;
+  const btn1Translate = useRef(new Animated.Value(16)).current;
+
+  const btn2Opacity = useRef(new Animated.Value(0)).current;
+  const btn2Translate = useRef(new Animated.Value(16)).current;
+
+  const glowScale = useRef(new Animated.Value(1)).current;
+  const glowOpacity = useRef(new Animated.Value(0.18)).current;
+
+  useEffect(() => {
+    // Entrance sequence
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(headerOpacity, {
+          toValue: 1,
+          duration: 650,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(headerTranslate, {
+          toValue: 0,
+          duration: 650,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.stagger(120, [
+        Animated.parallel([
+          Animated.timing(btn1Opacity, {
+            toValue: 1,
+            duration: 520,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(btn1Translate, {
+            toValue: 0,
+            duration: 520,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.parallel([
+          Animated.timing(btn2Opacity, {
+            toValue: 1,
+            duration: 520,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(btn2Translate, {
+            toValue: 0,
+            duration: 520,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+        ]),
+      ]),
+    ]).start();
+
+    // Subtle breathing glow loop
+    Animated.loop(
+      Animated.sequence([
+        Animated.parallel([
+          Animated.timing(glowScale, {
+            toValue: 1.06,
+            duration: 1800,
+            easing: Easing.inOut(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(glowOpacity, {
+            toValue: 0.28,
+            duration: 1800,
+            easing: Easing.inOut(Easing.quad),
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.parallel([
+          Animated.timing(glowScale, {
+            toValue: 1,
+            duration: 1800,
+            easing: Easing.inOut(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(glowOpacity, {
+            toValue: 0.18,
+            duration: 1800,
+            easing: Easing.inOut(Easing.quad),
+            useNativeDriver: true,
+          }),
+        ]),
+      ])
+    ).start();
+  }, [
+    headerOpacity,
+    headerTranslate,
+    btn1Opacity,
+    btn1Translate,
+    btn2Opacity,
+    btn2Translate,
+    glowScale,
+    glowOpacity,
+  ]);
+
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
-        <View style={styles.header}>
+        {/* Animated glow behind header */}
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            styles.glow,
+            {
+              opacity: glowOpacity,
+              transform: [{ scale: glowScale }],
+            },
+          ]}
+        />
+
+        <Animated.View
+          style={[
+            styles.header,
+            {
+              opacity: headerOpacity,
+              transform: [{ translateY: headerTranslate }],
+            },
+          ]}
+        >
           <Text style={styles.title}>Rork</Text>
-          <Text style={styles.subtitle}>
-            Build better apps, faster.
-          </Text>
-        </View>
+          <Text style={styles.subtitle}>Build better apps, faster.</Text>
+        </Animated.View>
 
         <View style={styles.footer}>
           <Link href="/auth/login" asChild>
-            <TouchableOpacity style={styles.buttonPrimary} activeOpacity={0.85}>
-              <Text style={styles.buttonPrimaryText}>Log In</Text>
-            </TouchableOpacity>
+            <Animated.View
+              style={{
+                opacity: btn1Opacity,
+                transform: [{ translateY: btn1Translate }],
+              }}
+            >
+              <TouchableOpacity style={styles.buttonPrimary} activeOpacity={0.85}>
+                <Text style={styles.buttonPrimaryText}>Log In</Text>
+              </TouchableOpacity>
+            </Animated.View>
           </Link>
 
           <Link href="/auth/sign-up" asChild>
-            <TouchableOpacity style={styles.buttonSecondary} activeOpacity={0.85}>
-              <Text style={styles.buttonSecondaryText}>Sign Up</Text>
-            </TouchableOpacity>
+            <Animated.View
+              style={{
+                opacity: btn2Opacity,
+                transform: [{ translateY: btn2Translate }],
+              }}
+            >
+              <TouchableOpacity style={styles.buttonSecondary} activeOpacity={0.85}>
+                <Text style={styles.buttonSecondaryText}>Sign Up</Text>
+              </TouchableOpacity>
+            </Animated.View>
           </Link>
         </View>
       </View>
@@ -41,50 +188,77 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 24,
     paddingVertical: 40,
+    position: 'relative',
+    overflow: 'hidden',
   },
+
+  glow: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 90 : 70,
+    alignSelf: 'center',
+    width: 260,
+    height: 260,
+    borderRadius: 999,
+    backgroundColor: '#0066FF',
+  },
+
   header: {
     marginTop: Platform.OS === 'ios' ? 80 : 60,
     alignItems: 'center',
   },
   title: {
-    fontSize: 42,
-    fontWeight: '700',
-    color: '#1F2937',
+    fontSize: 44,
+    fontWeight: '800',
+    color: '#0F172A',
     marginBottom: 10,
+    letterSpacing: 0.3,
   },
   subtitle: {
     fontSize: 18,
-    color: '#4B5563',
+    color: '#475569',
     textAlign: 'center',
     lineHeight: 26,
     maxWidth: 280,
   },
+
   footer: {
-    gap: 16,
+    gap: 14,
     marginBottom: 40,
   },
   buttonPrimary: {
     backgroundColor: '#0066FF',
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: 14,
     alignItems: 'center',
+    shadowColor: '#0066FF',
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 5,
   },
   buttonPrimaryText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.2,
   },
   buttonSecondary: {
     backgroundColor: '#FFFFFF',
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: 14,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#00C9A7',
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
   },
   buttonSecondaryText: {
     color: '#00C9A7',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.2,
   },
 });
