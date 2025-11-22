@@ -15,7 +15,16 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
-// Real student photos
+// NDC Colors
+const COLORS = {
+  green: '#006837', // NDC Green
+  red: '#E31B23',   // NDC Red
+  black: '#000000',
+  white: '#FFFFFF',
+  lightGreen: '#E6F4EA',
+};
+
+// Student photos (placeholders - you can replace these with TEIN specific images later)
 const studentPhotos = [
   'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=600&auto=format&fit=crop',
@@ -77,7 +86,8 @@ export default function Welcome() {
       {/* Top gradient zone (Immersive: goes behind status bar) */}
       <Animated.View style={[styles.topZone, fadeUp(topAnim, 8)]}>
         <LinearGradient
-          colors={['#3B82F6', '#93C5FD', '#EAF2FF', '#FFFFFF']}
+          // NDC Green gradient to white
+          colors={[COLORS.green, '#4CAF50', '#E8F5E9', '#FFFFFF']}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={styles.topGradient}
@@ -87,31 +97,34 @@ export default function Welcome() {
         <Animated.View style={[styles.cardsWrap, fadeUp(cardsAnim, 10)]}>
           <View style={styles.cardsRow}>
             <View style={[styles.card, styles.cardSmall]}>
-              <Text style={styles.cardTitle}>Track Classes</Text>
-              <Text style={styles.cardMeta}>Smart timetable</Text>
+              {/* Replaced with book/education icon concept */}
+              <Text style={[styles.cardIconText, { color: COLORS.green }]}>📚</Text>
+              <Text style={styles.cardTitle}>Political Education</Text>
+              <Text style={styles.cardMeta}>Learn & Grow</Text>
             </View>
 
             <View style={[styles.card, styles.cardSmall]}>
-              <Text style={styles.cardTitle}>Offline Notes</Text>
+              <Text style={[styles.cardIconText, { color: COLORS.red }]}>🤝</Text>
+              <Text style={styles.cardTitle}>Student Network</Text>
               <View style={styles.daysRow}>
-                {['M', 'T', 'W', 'T', 'F'].map((d, index) => (
-                  <View key={`${d}-${index}`} style={styles.dayDot}>
-                    <Text style={styles.dayDotText}>{d}</Text>
-                  </View>
-                ))}
+                 {/* NDC Colors dots */}
+                 <View style={[styles.dayDot, { backgroundColor: COLORS.green }]} />
+                 <View style={[styles.dayDot, { backgroundColor: COLORS.white, borderWidth: 1, borderColor: '#eee' }]} />
+                 <View style={[styles.dayDot, { backgroundColor: COLORS.red }]} />
+                 <View style={[styles.dayDot, { backgroundColor: COLORS.black }]} />
               </View>
             </View>
           </View>
 
           <View style={styles.cardsRow}>
             <View style={[styles.card, styles.cardWide]}>
-              <View style={styles.cardIconSoft}>
-                <Text style={styles.cardIconSoftText}>✓</Text>
+              <View style={[styles.cardIconSoft, { backgroundColor: COLORS.lightGreen }]}>
+                <Text style={[styles.cardIconSoftText, { color: COLORS.green }]}>✓</Text>
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={styles.cardTitle}>Activity Monitor</Text>
+                <Text style={styles.cardTitle}>News & Updates</Text>
                 <Text style={styles.cardMeta}>
-                  Stay consistent with your study goals.
+                  Stay informed with party activities.
                 </Text>
               </View>
             </View>
@@ -144,20 +157,22 @@ export default function Welcome() {
           fadeUp(ctaAnim, 12)
         ]}
       >
-        <Text style={styles.title}>Welcome to Rork</Text>
+        {/* TEIN Branding */}
+        <Text style={styles.title}>TEIN Ghana</Text>
+        <Text style={styles.motto}>Unity, Stability, and Development</Text>
         <Text style={styles.subtitle}>
-          Supporting students to learn smarter and stay on track.
+          The Tertiary Education Institutions Network of the NDC.
         </Text>
 
         <Link href="/auth/sign-up" asChild>
-          <TouchableOpacity style={styles.primaryBtn} activeOpacity={0.9}>
-            <Text style={styles.primaryBtnText}>Sign up</Text>
+          <TouchableOpacity style={[styles.primaryBtn, { backgroundColor: COLORS.green }]} activeOpacity={0.9}>
+            <Text style={styles.primaryBtnText}>Join TEIN</Text>
           </TouchableOpacity>
         </Link>
 
         <Link href="/auth/login" asChild>
           <TouchableOpacity style={styles.loginLink} activeOpacity={0.8}>
-            <Text style={styles.loginText}>Log in</Text>
+            <Text style={styles.loginText}>Member Login</Text>
           </TouchableOpacity>
         </Link>
       </Animated.View>
@@ -174,7 +189,7 @@ const styles = StyleSheet.create({
   },
 
   topZone: {
-    height: width * 0.9, // Ensures it takes up significant space from top
+    height: width * 0.9, 
     position: 'relative',
     marginBottom: 20,
   },
@@ -209,7 +224,7 @@ const styles = StyleSheet.create({
   },
   cardSmall: {
     flex: 1,
-    minHeight: 100,
+    minHeight: 110,
     justifyContent: 'center',
   },
   cardWide: {
@@ -220,7 +235,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#111827',
     marginBottom: 4,
   },
@@ -228,41 +243,35 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#6B7280',
   },
+  cardIconText: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
   daysRow: {
     flexDirection: 'row',
-    gap: 4,
-    marginTop: 8,
+    gap: 6,
+    marginTop: 12,
   },
   dayDot: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#F3F4F6',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dayDotText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#9CA3AF',
+    width: 12,
+    height: 12,
+    borderRadius: 6,
   },
   cardIconSoft: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#EFF6FF',
     alignItems: 'center',
     justifyContent: 'center',
   },
   cardIconSoftText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#3B82F6',
   },
 
   avatarsWrap: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 16,
   },
   avatarsRow: {
     flexDirection: 'row',
@@ -283,14 +292,22 @@ const styles = StyleSheet.create({
   bottomZone: {
     paddingHorizontal: 24,
     alignItems: 'center',
-    // paddingBottom is handled dynamically
   },
   title: {
-    fontSize: 28,
-    fontWeight: '800',
+    fontSize: 32,
+    fontWeight: '900',
     color: '#111827',
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: 4,
+  },
+  motto: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#E31B23', // Red for the motto
+    textAlign: 'center',
+    marginBottom: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 16,
@@ -303,20 +320,19 @@ const styles = StyleSheet.create({
   primaryBtn: {
     width: '100%',
     height: 52,
-    backgroundColor: '#111827',
     borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
-    shadowColor: '#000',
+    shadowColor: '#006837',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 3,
   },
   primaryBtnText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#FFFFFF',
   },
   loginLink: {
