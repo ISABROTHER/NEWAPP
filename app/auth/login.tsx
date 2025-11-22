@@ -16,14 +16,16 @@ export default function Login() {
   const { login, isLoggingIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleLogin = () => {
     if (!email || !password) return;
+    setError(null);
     login(
-      { id: '1', email, name: 'User' },
+      { email: email.trim(), password },
       {
-        onSuccess: () => {
-          // Navigation handled in context
+        onError: (err: any) => {
+          setError(err?.message ?? 'Unable to sign in. Please try again.');
         },
       }
     );
@@ -39,9 +41,15 @@ export default function Login() {
 
       <View style={styles.content}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Welcome Back</Text>
+          <Text style={styles.title}>Welcome back</Text>
           <Text style={styles.subtitle}>Sign in to continue</Text>
         </View>
+
+        {!!error && (
+          <View style={styles.errorBox}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
 
         <View style={styles.form}>
           <View style={styles.inputContainer}>
@@ -81,19 +89,19 @@ export default function Login() {
             {isLoggingIn ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={styles.buttonText}>Log In</Text>
+              <Text style={styles.buttonText}>Sign In</Text>
             )}
           </TouchableOpacity>
         </View>
+      </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account? </Text>
-          <Link href="/auth/sign-up" asChild>
-            <TouchableOpacity>
-              <Text style={styles.footerLink}>Sign Up</Text>
-            </TouchableOpacity>
-          </Link>
-        </View>
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Don't have an account? </Text>
+        <Link href="/auth/sign-up" asChild>
+          <TouchableOpacity>
+            <Text style={styles.footerLink}>Sign Up</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
     </SafeAreaView>
   );
@@ -120,17 +128,30 @@ const styles = StyleSheet.create({
     paddingTop: 40,
   },
   titleContainer: {
-    marginBottom: 32,
+    marginBottom: 40,
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: '#000',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
     color: '#666',
+  },
+  errorBox: {
+    backgroundColor: '#FFF1F2',
+    borderColor: '#FECDD3',
+    borderWidth: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    marginBottom: 12,
+  },
+  errorText: {
+    color: '#9F1239',
+    fontSize: 14,
   },
   form: {
     gap: 16,
@@ -153,6 +174,7 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     alignSelf: 'flex-end',
+    marginTop: -8,
   },
   forgotPasswordText: {
     color: '#666',
