@@ -13,18 +13,20 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SignUp() {
-  const { login, isLoggingIn } = useAuth();
+  const { signUp, isLoggingIn } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleSignUp = () => {
     if (!email || !password || !name) return;
-    login(
-      { id: '1', email, name },
+    setError(null);
+    signUp(
+      { email: email.trim(), password, name: name.trim() },
       {
-        onSuccess: () => {
-          // Navigation handled in context
+        onError: (err: any) => {
+          setError(err?.message ?? 'Unable to sign up. Please try again.');
         },
       }
     );
@@ -40,19 +42,26 @@ export default function SignUp() {
 
       <View style={styles.content}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Sign up to get started</Text>
+          <Text style={styles.title}>Create account</Text>
+          <Text style={styles.subtitle}>Join us to get started</Text>
         </View>
+
+        {!!error && (
+          <View style={styles.errorBox}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
 
         <View style={styles.form}>
           <View style={styles.inputContainer}>
             <User color="#666" size={20} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="Full Name"
+              placeholder="Full name"
               placeholderTextColor="#999"
               value={name}
               onChangeText={setName}
+              autoCapitalize="words"
             />
           </View>
 
@@ -93,15 +102,15 @@ export default function SignUp() {
             )}
           </TouchableOpacity>
         </View>
+      </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Already have an account? </Text>
-          <Link href="/auth/login" asChild>
-            <TouchableOpacity>
-              <Text style={styles.footerLink}>Log In</Text>
-            </TouchableOpacity>
-          </Link>
-        </View>
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Already have an account? </Text>
+        <Link href="/auth/login" asChild>
+          <TouchableOpacity>
+            <Text style={styles.footerLink}>Sign In</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
     </SafeAreaView>
   );
@@ -128,17 +137,30 @@ const styles = StyleSheet.create({
     paddingTop: 40,
   },
   titleContainer: {
-    marginBottom: 32,
+    marginBottom: 40,
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: '#000',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
     color: '#666',
+  },
+  errorBox: {
+    backgroundColor: '#FFF1F2',
+    borderColor: '#FECDD3',
+    borderWidth: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    marginBottom: 12,
+  },
+  errorText: {
+    color: '#9F1239',
+    fontSize: 14,
   },
   form: {
     gap: 16,
