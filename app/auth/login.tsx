@@ -9,10 +9,14 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Login() {
+  const insets = useSafeAreaInsets();
   const { login, isLoggingIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,68 +36,77 @@ export default function Login() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ArrowLeft color="#000" size={24} />
         </TouchableOpacity>
       </View>
 
-      <View style={styles.content}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>Welcome back</Text>
-          <Text style={styles.subtitle}>Sign in to continue</Text>
-        </View>
-
-        {!!error && (
-          <View style={styles.errorBox}>
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        )}
-
-        <View style={styles.form}>
-          <View style={styles.inputContainer}>
-            <Mail color="#666" size={20} style={styles.inputIcon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor="#999"
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent} 
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Welcome back</Text>
+            <Text style={styles.subtitle}>Sign in to continue</Text>
           </View>
 
-          <View style={styles.inputContainer}>
-            <Lock color="#666" size={20} style={styles.inputIcon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="#999"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
+          {!!error && (
+            <View style={styles.errorBox}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          )}
+
+          <View style={styles.form}>
+            <View style={styles.inputContainer}>
+              <Mail color="#666" size={20} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#999"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Lock color="#666" size={20} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor="#999"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
+            </View>
+
+            <TouchableOpacity style={styles.forgotPassword}>
+              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button, (!email || !password) && styles.buttonDisabled]}
+              onPress={handleLogin}
+              disabled={isLoggingIn || !email || !password}
+            >
+              {isLoggingIn ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.buttonText}>Sign In</Text>
+              )}
+            </TouchableOpacity>
           </View>
-
-          <TouchableOpacity style={styles.forgotPassword}>
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, (!email || !password) && styles.buttonDisabled]}
-            onPress={handleLogin}
-            disabled={isLoggingIn || !email || !password}
-          >
-            {isLoggingIn ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Sign In</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>Don't have an account? </Text>
@@ -103,7 +116,7 @@ export default function Login() {
           </TouchableOpacity>
         </Link>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -115,6 +128,8 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 24,
     paddingTop: 12,
+    height: 52,
+    justifyContent: 'center',
   },
   backButton: {
     width: 40,
@@ -122,13 +137,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
-  content: {
-    flex: 1,
+  scrollContent: {
+    flexGrow: 1,
     paddingHorizontal: 24,
-    paddingTop: 40,
+    paddingTop: 20,
+    paddingBottom: 100, // space for footer
   },
   titleContainer: {
-    marginBottom: 40,
+    marginBottom: 32,
   },
   title: {
     fontSize: 32,
@@ -171,6 +187,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#000',
+    height: '100%',
   },
   forgotPassword: {
     alignSelf: 'flex-end',
@@ -197,10 +214,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 'auto',
-    paddingBottom: 40,
+    paddingBottom: 24, // Will be added to insets.bottom
+    backgroundColor: '#fff', // Ensure it covers scroll content
+    paddingTop: 12,
   },
   footerText: {
     color: '#666',

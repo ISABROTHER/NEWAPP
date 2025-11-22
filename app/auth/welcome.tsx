@@ -10,12 +10,12 @@ import {
   View,
   Dimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
-// Real student photos (high quality, stable Unsplash links)
+// Real student photos
 const studentPhotos = [
   'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=600&auto=format&fit=crop',
@@ -25,6 +25,7 @@ const studentPhotos = [
 ];
 
 export default function Welcome() {
+  const insets = useSafeAreaInsets();
   const topAnim = useRef(new Animated.Value(0)).current;
   const cardsAnim = useRef(new Animated.Value(0)).current;
   const textAnim = useRef(new Animated.Value(0)).current;
@@ -72,109 +73,108 @@ export default function Welcome() {
   });
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      <View style={styles.container}>
-        {/* Top gradient zone (like sample) */}
-        <Animated.View style={[styles.topZone, fadeUp(topAnim, 8)]}>
-          <LinearGradient
-            colors={['#3B82F6', '#93C5FD', '#EAF2FF', '#FFFFFF']}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={styles.topGradient}
-          />
+    <View style={styles.container}>
+      {/* Top gradient zone (Immersive: goes behind status bar) */}
+      <Animated.View style={[styles.topZone, fadeUp(topAnim, 8)]}>
+        <LinearGradient
+          colors={['#3B82F6', '#93C5FD', '#EAF2FF', '#FFFFFF']}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={styles.topGradient}
+        />
 
-          {/* Floating feature cards */}
-          <Animated.View style={[styles.cardsWrap, fadeUp(cardsAnim, 10)]}>
-            <View style={styles.cardsRow}>
-              <View style={[styles.card, styles.cardSmall]}>
-                <Text style={styles.cardTitle}>Track Classes</Text>
-                <Text style={styles.cardMeta}>Smart timetable</Text>
-              </View>
-
-              <View style={[styles.card, styles.cardSmall]}>
-                <Text style={styles.cardTitle}>Offline Notes</Text>
-                <View style={styles.daysRow}>
-                  {['M', 'T', 'W', 'T', 'F'].map((d, index) => (
-                    <View key={`${d}-${index}`} style={styles.dayDot}>
-                      <Text style={styles.dayDotText}>{d}</Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
+        {/* Floating feature cards */}
+        <Animated.View style={[styles.cardsWrap, fadeUp(cardsAnim, 10)]}>
+          <View style={styles.cardsRow}>
+            <View style={[styles.card, styles.cardSmall]}>
+              <Text style={styles.cardTitle}>Track Classes</Text>
+              <Text style={styles.cardMeta}>Smart timetable</Text>
             </View>
 
-            <View style={styles.cardsRow}>
-              <View style={[styles.card, styles.cardWide]}>
-                <View style={styles.cardIconSoft}>
-                  <Text style={styles.cardIconSoftText}>✓</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.cardTitle}>Activity Monitor</Text>
-                  <Text style={styles.cardMeta}>
-                    Stay consistent with your study goals.
-                  </Text>
-                </View>
+            <View style={[styles.card, styles.cardSmall]}>
+              <Text style={styles.cardTitle}>Offline Notes</Text>
+              <View style={styles.daysRow}>
+                {['M', 'T', 'W', 'T', 'F'].map((d, index) => (
+                  <View key={`${d}-${index}`} style={styles.dayDot}>
+                    <Text style={styles.dayDotText}>{d}</Text>
+                  </View>
+                ))}
               </View>
             </View>
-          </Animated.View>
-        </Animated.View>
+          </View>
 
-        {/* Avatar group */}
-        <Animated.View style={[styles.avatarsWrap, fadeUp(textAnim, 10)]}>
-          <View style={styles.avatarsRow}>
-            {studentPhotos.slice(0, 5).map((uri, i) => (
-              <View
-                key={`avatar-${i}`}
-                style={[
-                  styles.avatarShell,
-                  { marginLeft: i === 0 ? 0 : -12, zIndex: 10 - i },
-                ]}
-              >
-                <Image source={{ uri }} style={styles.avatar} />
+          <View style={styles.cardsRow}>
+            <View style={[styles.card, styles.cardWide]}>
+              <View style={styles.cardIconSoft}>
+                <Text style={styles.cardIconSoftText}>✓</Text>
               </View>
-            ))}
+              <View style={{ flex: 1 }}>
+                <Text style={styles.cardTitle}>Activity Monitor</Text>
+                <Text style={styles.cardMeta}>
+                  Stay consistent with your study goals.
+                </Text>
+              </View>
+            </View>
           </View>
         </Animated.View>
+      </Animated.View>
 
-        {/* Text + CTAs */}
-        <Animated.View style={[styles.bottomZone, fadeUp(ctaAnim, 12)]}>
-          <Text style={styles.title}>Welcome to Rork</Text>
-          <Text style={styles.subtitle}>
-            Supporting students to learn smarter and stay on track.
-          </Text>
+      {/* Avatar group */}
+      <Animated.View style={[styles.avatarsWrap, fadeUp(textAnim, 10)]}>
+        <View style={styles.avatarsRow}>
+          {studentPhotos.slice(0, 5).map((uri, i) => (
+            <View
+              key={`avatar-${i}`}
+              style={[
+                styles.avatarShell,
+                { marginLeft: i === 0 ? 0 : -12, zIndex: 10 - i },
+              ]}
+            >
+              <Image source={{ uri }} style={styles.avatar} />
+            </View>
+          ))}
+        </View>
+      </Animated.View>
 
-          {/* Only your existing functions */}
-          <Link href="/auth/sign-up" asChild>
-            <TouchableOpacity style={styles.primaryBtn} activeOpacity={0.9}>
-              <Text style={styles.primaryBtnText}>Sign up</Text>
-            </TouchableOpacity>
-          </Link>
+      {/* Text + CTAs */}
+      <Animated.View 
+        style={[
+          styles.bottomZone, 
+          { paddingBottom: Math.max(insets.bottom, 24) }, 
+          fadeUp(ctaAnim, 12)
+        ]}
+      >
+        <Text style={styles.title}>Welcome to Rork</Text>
+        <Text style={styles.subtitle}>
+          Supporting students to learn smarter and stay on track.
+        </Text>
 
-          <Link href="/auth/login" asChild>
-            <TouchableOpacity style={styles.loginLink} activeOpacity={0.8}>
-              <Text style={styles.loginText}>Log in</Text>
-            </TouchableOpacity>
-          </Link>
-        </Animated.View>
-      </View>
-    </SafeAreaView>
+        <Link href="/auth/sign-up" asChild>
+          <TouchableOpacity style={styles.primaryBtn} activeOpacity={0.9}>
+            <Text style={styles.primaryBtnText}>Sign up</Text>
+          </TouchableOpacity>
+        </Link>
+
+        <Link href="/auth/login" asChild>
+          <TouchableOpacity style={styles.loginLink} activeOpacity={0.8}>
+            <Text style={styles.loginText}>Log in</Text>
+          </TouchableOpacity>
+        </Link>
+      </Animated.View>
+    </View>
   );
 }
 
 const CARD_RADIUS = 14;
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
 
   topZone: {
-    height: width * 0.9,
+    height: width * 0.9, // Ensures it takes up significant space from top
     position: 'relative',
     marginBottom: 20,
   },
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   bottomZone: {
     paddingHorizontal: 24,
     alignItems: 'center',
-    paddingBottom: 24,
+    // paddingBottom is handled dynamically
   },
   title: {
     fontSize: 28,
