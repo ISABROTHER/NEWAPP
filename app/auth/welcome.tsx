@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
-  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -177,5 +176,151 @@ const styles = StyleSheet.create({
   topZone: {
     height: width * 0.9,
     position: 'relative',
+    marginBottom: 20,
   },
   topGradient: {
+    ...StyleSheet.absoluteFillObject,
+  },
+
+  cardsWrap: {
+    position: 'absolute',
+    bottom: 40,
+    left: 20,
+    right: 20,
+  },
+  cardsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 12,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: CARD_RADIUS,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  cardSmall: {
+    flex: 1,
+    minHeight: 100,
+    justifyContent: 'center',
+  },
+  cardWide: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  cardTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  cardMeta: {
+    fontSize: 13,
+    color: '#6B7280',
+  },
+  daysRow: {
+    flexDirection: 'row',
+    gap: 4,
+    marginTop: 8,
+  },
+  dayDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#F3F4F6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dayDotText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#9CA3AF',
+  },
+  cardIconSoft: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#EFF6FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardIconSoftText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#3B82F6',
+  },
+
+  avatarsWrap: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  avatarsRow: {
+    flexDirection: 'row',
+  },
+  avatarShell: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#FFFFFF',
+    padding: 2,
+  },
+  avatar: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 20,
+  },
+
+  bottomZone: {
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    paddingBottom: 24,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#111827',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 32,
+    maxWidth: 300,
+  },
+  primaryBtn: {
+    width: '100%',
+    height: 52,
+    backgroundColor: '#111827',
+    borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  primaryBtnText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  loginLink: {
+    padding: 12,
+  },
+  loginText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#374151',
+  },
+});
