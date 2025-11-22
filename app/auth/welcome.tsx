@@ -124,7 +124,7 @@ export default function Welcome() {
           <View style={styles.avatarsRow}>
             {studentPhotos.slice(0, 5).map((uri, i) => (
               <View
-                key={uri}
+                key={`avatar-${i}`}
                 style={[
                   styles.avatarShell,
                   { marginLeft: i === 0 ? 0 : -12, zIndex: 10 - i },
