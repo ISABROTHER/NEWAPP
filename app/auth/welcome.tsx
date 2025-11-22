@@ -147,30 +147,31 @@ export default function Welcome() {
         </Animated.View>
 
         <View style={styles.footer}>
+          {/* ✅ Link direct child is TouchableOpacity again */}
           <Link href="/auth/login" asChild>
-            <Animated.View
-              style={{
-                opacity: btn1Opacity,
-                transform: [{ translateY: btn1Translate }],
-              }}
-            >
-              <TouchableOpacity style={styles.buttonPrimary} activeOpacity={0.85}>
+            <TouchableOpacity style={styles.buttonPrimary} activeOpacity={0.85}>
+              <Animated.View
+                style={{
+                  opacity: btn1Opacity,
+                  transform: [{ translateY: btn1Translate }],
+                }}
+              >
                 <Text style={styles.buttonPrimaryText}>Log In</Text>
-              </TouchableOpacity>
-            </Animated.View>
+              </Animated.View>
+            </TouchableOpacity>
           </Link>
 
           <Link href="/auth/sign-up" asChild>
-            <Animated.View
-              style={{
-                opacity: btn2Opacity,
-                transform: [{ translateY: btn2Translate }],
-              }}
-            >
-              <TouchableOpacity style={styles.buttonSecondary} activeOpacity={0.85}>
+            <TouchableOpacity style={styles.buttonSecondary} activeOpacity={0.85}>
+              <Animated.View
+                style={{
+                  opacity: btn2Opacity,
+                  transform: [{ translateY: btn2Translate }],
+                }}
+              >
                 <Text style={styles.buttonSecondaryText}>Sign Up</Text>
-              </TouchableOpacity>
-            </Animated.View>
+              </Animated.View>
+            </TouchableOpacity>
           </Link>
         </View>
       </View>
