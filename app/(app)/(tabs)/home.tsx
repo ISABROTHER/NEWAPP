@@ -1,151 +1,143 @@
-import { useAuth } from '@/context/auth';
-import { StyleSheet, Text, View, ScrollView, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Bell, Search } from 'lucide-react-native';
 
 export default function Home() {
-  const { user } = useAuth();
-
+  const insets = useSafeAreaInsets();
+  
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
-      <View style={styles.headerWrapper}>
-        <LinearGradient
-          colors={['#3B82F6', '#93C5FD', '#FFFFFF']}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={styles.headerGradient}
-        />
-
-        <View style={styles.headerContent}>
-          <Text style={styles.greeting}>Hello, {user?.name || 'User'}</Text>
-          <Text style={styles.subtitle}>Welcome to your dashboard</Text>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.greeting}>Good Morning,</Text>
+          <Text style={styles.name}>Student</Text>
+        </View>
+        <View style={styles.headerActions}>
+          <TouchableOpacity style={styles.iconButton}>
+            <Search color="#1E293B" size={24} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <Bell color="#1E293B" size={24} />
+            <View style={styles.badge} />
+          </TouchableOpacity>
         </View>
       </View>
-
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Card 1 */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Getting Started</Text>
-          <Text style={styles.cardText}>
-            This is your simple authenticated dashboard. Start building your features here.
-          </Text>
+      
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Today's Overview */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Today&apos;s Classes</Text>
+          <View style={styles.card}>
+             <Text style={styles.emptyText}>No classes today</Text>
+          </View>
         </View>
 
-        {/* Stats section */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Projects</Text>
-          </View>
-
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Tasks</Text>
+        {/* Announcements */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Announcements</Text>
+          <View style={styles.announcementCard}>
+             <Text style={styles.announcementTitle}>Welcome to the new semester!</Text>
+             <Text style={styles.announcementBody}>Check your timetable for updates.</Text>
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
-const CARD_RADIUS = 18;
-
 const styles = StyleSheet.create({
-  safe: {
+  container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F8FAFC',
   },
-
-  headerWrapper: {
-    height: 160,
-    position: 'relative',
-  },
-
-  headerGradient: {
-    ...StyleSheet.absoluteFillObject,
-  },
-
-  headerContent: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-  },
-
-  greeting: {
-    fontSize: 30,
-    fontWeight: '800',
-    color: '#0F172A',
-    letterSpacing: 0.2,
-    marginBottom: 4,
-  },
-
-  subtitle: {
-    fontSize: 15.5,
-    color: '#475569',
-  },
-
-  content: {
-    paddingVertical: 20,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
-    gap: 18,
+    paddingBottom: 20,
+    paddingTop: 10,
   },
-
+  greeting: {
+    fontSize: 16,
+    color: '#64748B',
+    fontWeight: '500',
+  },
+  name: {
+    fontSize: 24,
+    color: '#0F172A',
+    fontWeight: '700',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  iconButton: {
+    width: 44,
+    height: 44,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+  },
+  badge: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#EF4444',
+    borderWidth: 1.5,
+    borderColor: '#FFFFFF',
+  },
+  content: {
+    paddingHorizontal: 20,
+    paddingBottom: 100, // Space for tab bar
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 12,
+  },
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: CARD_RADIUS,
-    padding: 22,
-    shadowColor: '#0F172A',
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 3,
+    borderRadius: 20,
+    padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(15,23,42,0.04)',
-  },
-
-  cardTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#0F172A',
-    marginBottom: 10,
-  },
-
-  cardText: {
-    fontSize: 15.5,
-    color: '#475569',
-    lineHeight: 22,
-  },
-
-  statsContainer: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-
-  statCard: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: CARD_RADIUS,
-    paddingVertical: 26,
+    borderColor: '#F1F5F9',
+    minHeight: 120,
+    justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#0F172A',
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 3,
-    borderWidth: 1,
-    borderColor: 'rgba(15,23,42,0.04)',
   },
-
-  statNumber: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#0F172A',
+  emptyText: {
+    color: '#94A3B8',
+    fontSize: 15,
+  },
+  announcementCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+    borderLeftWidth: 4,
+    borderLeftColor: '#3B82F6',
+  },
+  announcementTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1E293B',
     marginBottom: 4,
   },
-
-  statLabel: {
+  announcementBody: {
     fontSize: 14,
-    color: '#475569',
-    fontWeight: '500',
+    color: '#64748B',
   },
 });
