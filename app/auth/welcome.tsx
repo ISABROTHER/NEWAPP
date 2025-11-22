@@ -94,8 +94,8 @@ export default function Welcome() {
               <View style={[styles.card, styles.cardSmall]}>
                 <Text style={styles.cardTitle}>Offline Notes</Text>
                 <View style={styles.daysRow}>
-                  {['M', 'T', 'W', 'T', 'F'].map((d) => (
-                    <View key={d} style={styles.dayDot}>
+                  {['M', 'T', 'W', 'T', 'F'].map((d, index) => (
+                    <View key={`${d}-${index}`} style={styles.dayDot}>
                       <Text style={styles.dayDotText}>{d}</Text>
                     </View>
                   ))}
@@ -179,7 +179,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   topGradient: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
 
   cardsWrap: {
