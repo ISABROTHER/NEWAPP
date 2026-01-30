@@ -14,23 +14,20 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
 
-// Keep official brand colors available, but use them subtly
+// Brand colors
 const BRAND_RED = "#D71920";
 const BRAND_BLACK = "#000000";
 const BRAND_WHITE = "#FFFFFF";
 
-// Official umbrella logo (identity, not loud politics)
+// Official NDC logo
 const LOGO_URL =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Logo_of_the_National_Democratic_Congress_%28Ghana%29.svg/2560px-Logo_of_the_National_Democratic_Congress_%28Ghana%29.svg.png";
 
 export default function Welcome() {
   const insets = useSafeAreaInsets();
 
-  // Simple premium entrance
   const fade = useRef(new Animated.Value(0)).current;
   const lift = useRef(new Animated.Value(10)).current;
-
-  // Subtle float for life (not flashy)
   const floatY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -76,7 +73,7 @@ export default function Welcome() {
             { opacity: fade, transform: [{ translateY: lift }] },
           ]}
         >
-          {/* Logo is kept but styled neutral */}
+          {/* Enlarged floating logo (+40%) */}
           <Animated.View style={{ transform: [{ translateY: floatY }] }}>
             <View style={styles.logoWrap}>
               <Image
@@ -87,14 +84,13 @@ export default function Welcome() {
             </View>
           </Animated.View>
 
-          {/* Student-first copy (no politics tone) */}
           <Text style={styles.title}>TEIN Ghana</Text>
-          <Text style={styles.subtitle}>
-            A campus community for students to connect, organize, and grow as leaders.
-          </Text>
+
+          {/* Restored original subtitle */}
+          <Text style={styles.subtitle}>Organize. Connect. Lead on campus.</Text>
         </Animated.View>
 
-        {/* CTAs */}
+        {/* FIXED CTA — both Signup + Signin now show */}
         <Animated.View
           style={[
             styles.ctaWrap,
@@ -112,7 +108,7 @@ export default function Welcome() {
                 pressed && styles.pressed,
               ]}
             >
-              <Text style={styles.primaryBtnText}>Get Started</Text>
+              <Text style={styles.primaryBtnText}>Sign Up</Text>
             </Pressable>
           </Link>
 
@@ -143,14 +139,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
+  // Enlarged 40%
   logoWrap: {
-    width: 110,
-    height: 110,
-    borderRadius: 20,
+    width: 154, // +40% from 110
+    height: 154,
+    borderRadius: 28,
     backgroundColor: BRAND_WHITE,
     alignItems: "center",
     justifyContent: "center",
-    padding: 12,
+    padding: 18,
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.06)",
     shadowColor: BRAND_BLACK,
@@ -158,8 +155,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 2,
-    marginBottom: 18,
+    marginBottom: 22,
   },
+
   logo: { width: "100%", height: "100%" },
 
   title: {
@@ -193,7 +191,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 14,
     alignItems: "center",
-    backgroundColor: BRAND_RED, // subtle brand touch only here
+    backgroundColor: BRAND_RED,
     shadowColor: BRAND_RED,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.20,
